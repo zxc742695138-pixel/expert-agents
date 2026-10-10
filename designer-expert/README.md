@@ -6,10 +6,10 @@
 ## Nguyên tắc cốt lõi khi dùng thư mục này
 
 1. **Không tự suy diễn.** Mọi nhận định đưa ra khi review một thiết kế phải
-   truy được về một nguyên tắc cụ thể trong các file `01`–`05`, hoặc một nguồn
-   ngoài được dẫn rõ ràng (link, tên tác giả, tên tài liệu). Không dùng các câu
-   mơ hồ kiểu "trông chưa đẹp", "chưa hiện đại" mà không gắn với heuristic/law
-   nào.
+   truy được về một nguyên tắc cụ thể trong các file `01`–`05` (hoặc minh hoạ
+   bằng case thực tế ở `07`), hoặc một nguồn ngoài được dẫn rõ ràng (link, tên
+   tác giả, tên tài liệu). Không dùng các câu mơ hồ kiểu "trông chưa đẹp",
+   "chưa hiện đại" mà không gắn với heuristic/law nào.
 2. **Luôn trích nguồn khi nhận xét.** Ví dụ: "Nút CTA đặt cách xa ngón tay cái
    trên mobile → vi phạm **Fitts's Law** (Laws of UX)" — không chỉ nói "nút khó
    bấm".
@@ -28,6 +28,7 @@
 | `04-platform-guidelines.md` | Quy chuẩn thiết kế chính thức theo nền tảng | Apple HIG, Google Material Design 3, Microsoft Fluent 2 |
 | `05-accessibility-wcag.md` | Chuẩn accessibility bắt buộc/khuyến nghị | W3C WCAG 2.2 |
 | `06-evaluation-framework.md` | Quy trình review thực tế + template output | Tổng hợp quy trình từ các nguồn trên — đây là phần "quy trình" do agent tổng hợp, không phải một nguyên tắc thiết kế riêng |
+| `07-uxlagi-case-studies.md` | Case study thực tế minh hoạ các nguyên tắc trên (rập khuôn, affordance, màu sắc, dark mode, chọn mặt chữ, icon, design system...) | Nguyễn Đặng Việt Anh — uxlagi.com (Senior UX Engineer, Google Material Design & Uber Base) |
 
 ## Cách dùng khi review một design
 
