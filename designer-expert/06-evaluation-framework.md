@@ -4,35 +4,53 @@ File này là quy trình vận hành (không phải một nguyên tắc thiết 
 Expert Design Agent dùng các nguồn kiến thức ở file `01`–`05` một cách có hệ
 thống khi review một design cụ thể (web, mobile, tablet, desktop...).
 
-## Bước 0 — Thứ tự ưu tiên lấy dữ liệu khi input là Figma (quy tắc tiết kiệm token)
+## Bước 0 — Thứ tự ưu tiên đọc dữ liệu theo loại nguồn input (quy tắc tiết kiệm token)
 
-Đây là rule **bắt buộc, ưu tiên cao nhất**, áp dụng trước mọi bước khác khi
-input là link Figma. Ảnh (screenshot) không phải là phương pháp đọc dữ liệu
-mặc định — đọc ảnh tốn token nhiều hơn và kém chính xác hơn dữ liệu có cấu
-trúc cho hầu hết loại lỗi (lệch alignment, spacing sai scale, màu không nhất
-quán, contrast không đạt).
+Đây là rule **bắt buộc, ưu tiên cao nhất**, áp dụng trước mọi bước khác, với
+**mọi loại nguồn input** — không riêng Figma. Nguyên tắc chung: luôn ưu tiên
+đọc dữ liệu layout dưới dạng **text/số có cấu trúc**; đọc **ảnh UI (raster
+screenshot)** luôn là phương án **tệ nhất, chỉ dùng khi bị ép buộc** — vì tốn
+token nhiều hơn và kém chính xác hơn dữ liệu có cấu trúc cho hầu hết loại lỗi
+(lệch alignment, spacing sai scale, màu không nhất quán, contrast không đạt).
 
-Thứ tự bắt buộc:
+### Tầng 1 — Nguồn có dữ liệu cấu trúc đầy đủ (luôn ưu tiên, đọc trước tiên)
 
-1. **`get_metadata`** — quét cấu trúc layer/component trước, chi phí thấp
-   nhất. Dùng để biết cái gì là component tái sử dụng, cái gì là instance
-   lệch chuẩn.
-2. **`get_design_context`** — lấy toạ độ, spacing, màu (hex), typography dưới
-   dạng số/text. Dùng dữ liệu này để chạy toàn bộ các check đo được bằng số:
-   - Alignment: so sánh trực tiếp toạ độ x/y giữa các element.
-   - Spacing: so giá trị gap thực tế với scale chuẩn (4px/8px).
-   - Contrast: tính trực tiếp từ 2 giá trị hex, so với ngưỡng WCAG (file `05`).
-   - Type scale, màu lặp lại giữa component cùng chức năng: so sánh giá trị
-     số/hex trực tiếp.
-3. **`get_screenshot` — chỉ dùng như phương pháp ép buộc cuối cùng**, tức khi
-   dữ liệu ở bước 1–2 không trả lời được câu hỏi đang xét: cảm nhận hierarchy
-   tổng thể (Gestalt, cần "nhìn" thật), element bị che/overlap không thấy
-   trong metadata, hoặc lỗi render (font không load, icon vỡ) mà data layer
-   không phản ánh. Khi phải dùng, **crop đúng phạm vi frame/component nghi
-   vấn** — không chụp cả flow nhiều màn hình, để tối ưu token ảnh.
+Tuỳ loại nguồn, dùng đúng kênh text/số tương ứng — không có "một tool cho tất
+cả", nhưng cùng một nguyên tắc:
 
-Nếu một issue có thể xác nhận bằng số (bước 1–2), không được dùng ảnh để xác
-nhận lại issue đó — làm vậy là lãng phí token không cần thiết.
+| Loại nguồn | Đọc bằng gì | Lấy được |
+|---|---|---|
+| Figma | `get_metadata` rồi `get_design_context` | toạ độ, spacing, màu hex, type, cấu trúc layer |
+| Web (site đang chạy/URL) | đọc DOM + computed CSS (devtools/inspect, không chụp màn hình) | spacing, màu, font thực tế đã render |
+| Code (React/Vue/HTML/CSS/Tailwind...) | đọc trực tiếp source file | class, token spacing/color, breakpoint |
+| Sketch/Adobe XD/Zeplin hoặc design tool khác có export spec | đọc JSON/CSS/spec export nếu có | tương đương Figma design context |
+| SVG tĩnh (không phải raster) | đọc trực tiếp mã SVG (text/XML) | toạ độ, path, màu — không cần "nhìn" |
+
+Với mọi nguồn ở tầng này, chạy hết các check đo được bằng số trước: alignment
+(so toạ độ x/y), spacing (so với scale 4px/8px), contrast (tính trực tiếp từ
+2 giá trị màu so với ngưỡng WCAG ở file `05`), type scale, màu lặp lại giữa
+component cùng chức năng.
+
+### Tầng 2 — Nguồn chỉ có dữ liệu cấu trúc một phần
+
+Dùng tối đa phần cấu trúc đọc được (ví dụ: code có class nhưng thiếu ảnh
+preview, hoặc Figma file bị khoá quyền chỉ cho screenshot công khai). Chỉ bù
+phần **không thể suy ra từ text** bằng ảnh, và chỉ crop đúng vùng thiếu dữ
+liệu đó — không chụp toàn bộ lại những gì đã đọc được bằng text.
+
+### Tầng 3 — Nguồn không có dữ liệu cấu trúc nào (ảnh UI thuần, PDF render,
+ảnh chụp mockup in giấy...) — phương án ép buộc cuối cùng
+
+Chỉ đọc ảnh khi thực sự không còn lựa chọn nào khác ở Tầng 1–2. Khi buộc phải
+dùng ảnh:
+
+- Crop đúng phạm vi đang nghi vấn, không đọc nguyên trang/nguyên flow nhiều
+  màn hình trong 1 lần.
+- Luôn ghi rõ trong report rằng giá trị đo được (màu, spacing, contrast...)
+  chỉ là **ước lượng từ ảnh**, cần xác minh bằng dữ liệu thực nếu có thể lấy
+  được sau đó (xem Bước 5).
+- Không dùng ảnh để xác nhận lại một issue đã xác nhận được bằng số ở Tầng
+  1–2 — đó là lãng phí token không cần thiết.
 
 ## Bước 1 — Xác định context trước khi review
 
