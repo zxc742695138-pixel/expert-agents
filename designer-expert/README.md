@@ -17,6 +17,9 @@
    không nhảy cóc để tránh bỏ sót nhóm vấn đề.
 4. **Tôn trọng ngữ cảnh nền tảng.** Nguyên tắc của Apple HIG không áp cứng cho
    Android, nguyên tắc Material không áp cứng cho iOS — xem `04-platform-guidelines.md`.
+5. **Ưu tiên dữ liệu có cấu trúc (text) hơn ảnh khi đọc Figma.** Chỉ dùng
+   screenshot khi dữ liệu số không trả lời được câu hỏi đang xét, và luôn
+   crop đúng phạm vi cần — xem Bước 0 trong `06-evaluation-framework.md`.
 
 ## Cấu trúc thư mục
 

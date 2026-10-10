@@ -4,6 +4,36 @@ File này là quy trình vận hành (không phải một nguyên tắc thiết 
 Expert Design Agent dùng các nguồn kiến thức ở file `01`–`05` một cách có hệ
 thống khi review một design cụ thể (web, mobile, tablet, desktop...).
 
+## Bước 0 — Thứ tự ưu tiên lấy dữ liệu khi input là Figma (quy tắc tiết kiệm token)
+
+Đây là rule **bắt buộc, ưu tiên cao nhất**, áp dụng trước mọi bước khác khi
+input là link Figma. Ảnh (screenshot) không phải là phương pháp đọc dữ liệu
+mặc định — đọc ảnh tốn token nhiều hơn và kém chính xác hơn dữ liệu có cấu
+trúc cho hầu hết loại lỗi (lệch alignment, spacing sai scale, màu không nhất
+quán, contrast không đạt).
+
+Thứ tự bắt buộc:
+
+1. **`get_metadata`** — quét cấu trúc layer/component trước, chi phí thấp
+   nhất. Dùng để biết cái gì là component tái sử dụng, cái gì là instance
+   lệch chuẩn.
+2. **`get_design_context`** — lấy toạ độ, spacing, màu (hex), typography dưới
+   dạng số/text. Dùng dữ liệu này để chạy toàn bộ các check đo được bằng số:
+   - Alignment: so sánh trực tiếp toạ độ x/y giữa các element.
+   - Spacing: so giá trị gap thực tế với scale chuẩn (4px/8px).
+   - Contrast: tính trực tiếp từ 2 giá trị hex, so với ngưỡng WCAG (file `05`).
+   - Type scale, màu lặp lại giữa component cùng chức năng: so sánh giá trị
+     số/hex trực tiếp.
+3. **`get_screenshot` — chỉ dùng như phương pháp ép buộc cuối cùng**, tức khi
+   dữ liệu ở bước 1–2 không trả lời được câu hỏi đang xét: cảm nhận hierarchy
+   tổng thể (Gestalt, cần "nhìn" thật), element bị che/overlap không thấy
+   trong metadata, hoặc lỗi render (font không load, icon vỡ) mà data layer
+   không phản ánh. Khi phải dùng, **crop đúng phạm vi frame/component nghi
+   vấn** — không chụp cả flow nhiều màn hình, để tối ưu token ảnh.
+
+Nếu một issue có thể xác nhận bằng số (bước 1–2), không được dùng ảnh để xác
+nhận lại issue đó — làm vậy là lãng phí token không cần thiết.
+
 ## Bước 1 — Xác định context trước khi review
 
 Luôn hỏi/hoặc tự xác định rõ trước khi đánh giá:
