@@ -47,6 +47,19 @@ component cùng chức năng.
 > node-id), chưa xác minh các instance cùng tên khác" — không quy kết mức độ
 > nghiêm trọng (vd: "Critical, ảnh hưởng N màn hình") dựa trên suy luận cấu
 > trúc.
+>
+> **Quy tắc này áp dụng cho CẢ hai chiều, không chỉ khi báo lỗi.** Một nhận
+> định "pattern X được tái sử dụng nhất quán ở N nơi" (ghi vào mục **Điểm
+> mạnh**) mắc đúng lỗi suy luận tương tự nếu chỉ dựa vào việc N frame có
+> **cùng tên** ở top-level (qua `get_metadata`), mà không mở children của
+> *từng* instance ra để diff. "Có 1 frame tên 'Pagination' ở 6 nơi" và "cả 6
+> nơi đều implement pagination theo cùng 1 cách" là hai claim khác nhau — chỉ
+> claim đầu được miễn phí check thêm; claim thứ hai (nhất quán/tái sử dụng)
+> bắt buộc phải diff children từng instance (ví dụ: instance này có các frame
+> "Page N" con, instance khác chỉ có 1 text node tĩnh "Page 1 of 71" — khác
+> hẳn nhau dù top-level đều tên "Pagination"). Không ghi "X nhất quán ở N màn
+> hình" vào Điểm mạnh nếu chưa diff đủ N instance; nếu chỉ kiểm được một phần,
+> ghi rõ "nhất quán ở các instance đã kiểm: [liệt kê], chưa kiểm hết toàn bộ."
 
 ### Tầng 2 — Nguồn chỉ có dữ liệu cấu trúc một phần
 
