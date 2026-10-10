@@ -31,6 +31,23 @@ Với mọi nguồn ở tầng này, chạy hết các check đo được bằng
 2 giá trị màu so với ngưỡng WCAG ở file `05`), type scale, màu lặp lại giữa
 component cùng chức năng.
 
+> **Cảnh báo quan trọng — "cấu trúc tồn tại" ≠ "giá trị thực giống nhau".**
+> `get_metadata` (và tương đương: cây layer, DOM structure không kèm computed
+> style) chỉ cho biết **một pattern/component tồn tại ở đâu** (id, tên, toạ
+> độ, kích thước) — **không** cho biết giá trị màu/token đã resolve thực tế
+> của từng instance. Tìm thấy cùng 1 tên frame (ví dụ "Pagination") xuất hiện
+> ở N màn hình **không đồng nghĩa** với việc lỗi màu/contrast phát hiện ở 1
+> instance cũng tồn tại ở N-1 instance còn lại — mỗi instance có thể đã được
+> bind vào token khác nhau (kể cả khi style cũ từng giống nhau). Trước khi
+> khẳng định một lỗi màu/contrast "lan rộng qua nhiều instance", phải gọi
+> `get_design_context` (hoặc tối thiểu đọc được giá trị fill/variable đã
+> resolve) **trên từng instance cụ thể** — không suy ra từ việc cấu trúc
+> hoặc tên layer giống nhau. Nếu không đủ thời gian/budget để kiểm hết từng
+> instance, phải nêu rõ trong report: "phát hiện tại 1 instance cụ thể (dẫn
+> node-id), chưa xác minh các instance cùng tên khác" — không quy kết mức độ
+> nghiêm trọng (vd: "Critical, ảnh hưởng N màn hình") dựa trên suy luận cấu
+> trúc.
+
 ### Tầng 2 — Nguồn chỉ có dữ liệu cấu trúc một phần
 
 Dùng tối đa phần cấu trúc đọc được (ví dụ: code có class nhưng thiếu ảnh
