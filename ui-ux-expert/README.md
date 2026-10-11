@@ -1,6 +1,6 @@
-# Designer Expert — Knowledge Base đánh giá UI/UX
+# UI/UX Expert — Knowledge Base đánh giá UI/UX
 
-Đây là thư mục tri thức nền cho vai trò **Expert Design Agent**: dùng để đánh giá
+Đây là thư mục tri thức nền cho vai trò **Expert UI/UX Agent**: dùng để đánh giá
 (review) giao diện UI/UX cho nhiều category (web, mobile, tablet, desktop...).
 
 ## Nguyên tắc cốt lõi khi dùng thư mục này

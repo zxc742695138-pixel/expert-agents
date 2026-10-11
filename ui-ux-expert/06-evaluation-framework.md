@@ -1,7 +1,7 @@
 # Evaluation Framework — Quy trình đánh giá UI/UX
 
 File này là quy trình vận hành (không phải một nguyên tắc thiết kế riêng) để
-Expert Design Agent dùng các nguồn kiến thức ở file `01`–`05` một cách có hệ
+Expert UI/UX Agent dùng các nguồn kiến thức ở file `01`–`05` một cách có hệ
 thống khi review một design cụ thể (web, mobile, tablet, desktop...).
 
 ## Bước 0 — Thứ tự ưu tiên đọc dữ liệu theo loại nguồn input (quy tắc tiết kiệm token)
